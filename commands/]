@@ -39,7 +39,6 @@ const sendOnLogChannel = (message) =>{
 }
 const handleAction=(message)=>{
     
-    let masterPath = process.cwd()    
 
     if(message.content.toLocaleLowerCase()==='hello'){
         sendOnLogChannel('[Issued] Greet Command by '+message.author.username)
@@ -47,7 +46,7 @@ const handleAction=(message)=>{
 
     if(message.content.toLocaleLowerCase()==='ls master'){
         sendOnLogChannel('[Issued] ls command ')
-        exec(`cd ${masterPath} && ls `,
+        exec('cd ~/dev/bopac && ls ',
     function (error, stdout, stderr) {
         message.member.send('[stdout >] \n'+stdout)
         stderr && message.member.send('[stderr >] '+stderr)
@@ -58,19 +57,16 @@ const handleAction=(message)=>{
     }
 
     if(message.content.toLocaleLowerCase()==='update master'){
-        sendOnLogChannel('[Issued] update command : '+message.author.username)
-        exec(`cd ${masterPath} && git pull`,
+        sendOnLogChannel('[Issued] update command ')
+        exec('cd ~/dev/bopac && git pull',
     function (error, stdout, stderr) {
-        message.reply('Check your dms for execution')
         message.member.send('[stdout >] \n'+stdout)
         stderr && message.member.send('[stderr >] '+stderr)
+        await sleep(5000)
+        process.exit(1)
         if (error !== null) {
             logger.error(error)
         }
-        setTimeout(()=>{
-            logger.warn(`[Restart] Command Issued by ${message.author.username}`)
-            process.exit(1)
-        },5000)
     });
     }
 
