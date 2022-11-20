@@ -15,6 +15,7 @@ const client=new Client({
 });
 client.once("ready", () =>{
     logger.info("Bopac is alive!")
+    sendOnLogChannel(`I am alive!`)
 })
 
 client.commands = new Collection()
