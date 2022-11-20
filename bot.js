@@ -49,6 +49,7 @@ const handleAction=(message)=>{
         sendOnLogChannel('[Issued] ls command ')
         exec(`cd ${masterPath} && ls `,
     function (error, stdout, stderr) {
+        message.reply('Check your dms for execution')
         message.member.send('[stdout >] \n'+stdout)
         stderr && message.member.send('[stderr >] '+stderr)
         if (error !== null) {
