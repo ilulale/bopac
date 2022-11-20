@@ -46,26 +46,32 @@ const handleAction=(message)=>{
         sendOnLogChannel('[Issued] Greet Command by '+message.author.username)
         message.channel.send(`Hello! @${message.author.username}`)}
 
-    if(message.content.toLocaleLowerCase()==='ls master'){
+    if(message.content.toLocaleLowerCase()==='!master ls'){
         sendOnLogChannel('[Issued] ls command ')
         exec(`cd ${masterPath} && ls `,
     function (error, stdout, stderr) {
         message.reply('Check your dms for execution')
         message.member.send('[stdout >] \n'+stdout)
         stderr && message.member.send('[stderr >] '+stderr)
+        message.member.send('--❌❌--')
         if (error !== null) {
             logger.error(error)
         }
     });
     }
 
-    if(message.content.toLocaleLowerCase()==='update master'){
+    if(message.content.toLocaleLowerCase()==='!master develop'){
+        message,reply('gitpod.io/#https://github.com/ilulale/bopac')
+    }
+
+    if(message.content.toLocaleLowerCase()==='!master update'){
         sendOnLogChannel('[Issued] update command : '+message.author.username)
         exec(`cd ${masterPath} && git pull`,
     function (error, stdout, stderr) {
         message.reply('Check your dms for execution')
         message.member.send('[stdout >] \n'+stdout)
         stderr && message.member.send('[stderr >] '+stderr)
+        message.member.send('--❌❌--')
         if (error !== null) {
             logger.error(error)
         }
