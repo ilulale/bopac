@@ -38,40 +38,45 @@ for (const file of commandFiles) {
 const sendOnLogChannel = (message) =>{
     client.channels.cache.get('1043947692377768026').send(message)
 }
+
 const handleAction=(message)=>{
     
     let masterPath = process.cwd()    
+    let replyObj = {}
 
     if(message.content.toLocaleLowerCase()==='hello'){
-        sendOnLogChannel('[Issued] Greet Command by '+message.author.username)
-        message.channel.send(`Hello! @${message.author.username}`)}
+        replyObj['log']= '[Issued] Greet Command by '+message.author.username
+        replyObj['channel'] = `Hello! @${message.author.username}`
 
     if(message.content.toLocaleLowerCase()==='!master ls'){
-        sendOnLogChannel('[Issued] ls command ')
+        replyObj['log'] = '[Issued] ls command'
         exec(`cd ${masterPath} && ls `,
     function (error, stdout, stderr) {
-        message.reply('Check your dms for execution')
-        message.member.send('[stdout >] \n'+stdout)
-        stderr && message.member.send('[stderr >] '+stderr)
-        message.member.send('--❌❌--')
+        replyObj['reply'] = 'Check your dms for execution'
+        replyObj['dm'] = '[stdout >] \n'+stdout+'\n'
+        if(stderr){
+            replyObj['dm'] = replyObj['dm'] + '[stderror >] \n'+stderr+'\n'
+        }
+        replyObj['dm'] = replyObj['dm'] + '--❌❌--'
+
         if (error !== null) {
             logger.error(error)
         }
     });
     }
 
-    if(message.content.toLocaleLowerCase()==='!master develop'){
-        message,reply('gitpod.io/#https://github.com/ilulale/bopac')
-    }
 
     if(message.content.toLocaleLowerCase()==='!master update'){
-        sendOnLogChannel('[Issued] update command : '+message.author.username)
+        replyObj['log'] = '[Issued] update command : '+message.author.username
         exec(`cd ${masterPath} && git pull`,
     function (error, stdout, stderr) {
-        message.reply('Check your dms for execution')
-        message.member.send('[stdout >] \n'+stdout)
-        stderr && message.member.send('[stderr >] '+stderr)
-        message.member.send('--❌❌--')
+        replyObj['reply']='Check your dms for execution'
+        replyObj['dm']='[stdout >] \n'+stdout+'\n'
+        if(stderr){
+            replyObj['dm']= replyObj['dm']+'[stderr >]\n'+stderr+'\n'
+        }
+        replyObj['dm'] = replyObj['dm']+'--❌❌--'
+
         if (error !== null) {
             logger.error(error)
         }
@@ -82,6 +87,7 @@ const handleAction=(message)=>{
     });
     }
 
+    return replyObj
 }
 
 client.on('messageCreate',
@@ -89,7 +95,19 @@ function (message){
     if(message.author.bot) return;
     else{
     logger.debug(message)
-        handleAction(message)
+        let replyObj = handleAction(message)
+        if(replyObj['channel']){
+            message.channel.send(replyObj['channel'])
+        }
+        if(replyObj['reply']){
+            message.reply(replyObj['reply'])
+        }
+        if(replyObj['dm']){
+            message.member.send(replyObj['dm'])
+        }
+        if(replyObj['log']){
+            sendOnLogChannel(replyObj['log'])
+        }
 }}
 )
 
